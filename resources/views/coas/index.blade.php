@@ -7,16 +7,22 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             @if (session('success'))
                 <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
                     {{ session('success') }}
                 </div>
             @endif
 
+            @if (session('danger'))
+                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                    {{ session('danger') }}
+                </div>
+            @endif
+
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    
+
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium">Daftar Akun Akuntansi</h3>
                         <a href="{{ route('coas.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition">
@@ -29,7 +35,7 @@
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kode</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nama Akun</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Header / Kategori</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Header</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -47,18 +53,16 @@
                                         {{ $coa->header_akun }}
                                     </span>
                                 </td>
-                                <td>
-                                    <a href="{{ route('coa.edit', $coa->id) }}" class="btn btn-sm btn-warning">
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                    <a href="{{ route('coa.edit', $coa->id) }}" class="btn btn-sm btn-warning mr-4">
                                         Edit
                                     </a>
-                                    {{-- Tombol hapus biasanya di sebelahnya --}}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                     <form action="{{ route('coas.destroy', $coa->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus akun ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
                                     </form>
+                                    {{-- Tombol hapus biasanya di sebelahnya --}}
                                 </td>
                             </tr>
                             @endforeach

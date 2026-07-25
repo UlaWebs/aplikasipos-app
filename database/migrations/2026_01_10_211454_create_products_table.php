@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('stok')->default(0); // Tambahan penting buat POS
             $table->string('gambar')->nullable(); // Simpan nama filenya aja
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

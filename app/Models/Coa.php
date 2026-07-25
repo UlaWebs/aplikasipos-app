@@ -9,9 +9,10 @@ class Coa extends Model
 {
     use HasFactory;
 
+    protected $table = 'coas';
     protected $fillable = [
         'kode_akun',
         'nama_akun',
-        'header_akun', 
+        'header_akun',
     ];
 }

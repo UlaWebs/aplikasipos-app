@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg sm:rounded-lg border-t-4 border-indigo-600">
                 <div class="p-8 text-gray-900 dark:text-gray-100">
-                    
+
                     <div class="text-center mb-8">
                         <h3 class="text-2xl font-bold uppercase tracking-widest">Toko Grosir Sukses</h3>
                         <p class="text-gray-500 text-sm">Laporan Laba Rugi</p>
@@ -36,7 +36,7 @@
                                 (Rp {{ number_format($hpp, 0, ',', '.') }})
                             </span>
                         </div>
-                        
+
                         <div class="flex justify-between items-center font-bold text-gray-800 dark:text-white mt-4 pt-2 border-t border-dashed border-gray-400">
                             <span>LABA KOTOR (Gross Profit)</span>
                             <span>Rp {{ number_format($labaKotor, 0, ',', '.') }}</span>

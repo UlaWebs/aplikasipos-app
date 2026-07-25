@@ -32,7 +32,7 @@ class ProductController extends Controller
             'kategori'    => 'required',
             'satuan'      => 'nullable|string',
             'harga'       => 'required|numeric', // Harga Jual Wajib
-            
+
             // Validasi Bersyarat:
             // Kalau stok_awal diisi lebih dari 0, maka harga_beli_awal WAJIB diisi
             'stok_awal'       => 'nullable|integer|min:0',
@@ -41,7 +41,7 @@ class ProductController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                
+
                 // Tentukan Harga Beli untuk disimpan di Master Data
                 // Kalau stok awal > 0, pakai harga inputan. Kalau stok 0, harga beli dianggap 0 (karena belum ada transaksi)
                 $hargaBeliFix = ($request->stok_awal > 0) ? $request->harga_beli_awal : 0;
@@ -54,7 +54,7 @@ class ProductController extends Controller
                     'satuan'      => $request->satuan ?? 'pcs',
                     'harga'       => $request->harga,
                     'harga_beli'  => $hargaBeliFix, // Ini yang masuk ke DB
-                    'stok'        => $request->stok_awal ?? 0, 
+                    'stok'        => $request->stok_awal ?? 0,
                 ]);
 
                 // B. Catat Stok Awal (Kalau ada)
@@ -75,5 +75,59 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
         }
+    }
+
+    public function edit(Product $product)
+    {
+        return view('products.edit', compact('product'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'kode_produk' => 'required|unique:products,kode_produk,' . $product->id,
+            'nama_produk' => 'required',
+            'kategori'    => 'required',
+            'satuan'      => 'nullable|string',
+            'harga'       => 'required|numeric',
+            'harga_beli'  => 'nullable|numeric|min:0',
+            'stok'        => 'nullable|integer|min:0',
+        ]);
+
+        $product->update($validated);
+
+        return redirect()->route('products.index')->with('success', 'Barang berhasil diperbarui!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Product $product)
+    {
+        // Jika model menggunakan SoftDeletes, lakukan soft delete terlebih dahulu.
+        // Jika sudah dalam keadaan trashed, lakukan force delete (hapus permanen).
+        $usesSoftDeletes = in_array(
+            \Illuminate\Database\Eloquent\SoftDeletes::class,
+            class_uses($product)
+        );
+
+        if ($usesSoftDeletes) {
+            if (method_exists($product, 'trashed') && $product->trashed()) {
+                $product->forceDelete();
+                $message = 'Barang berhasil dihapus permanen.';
+            } else {
+                $product->delete();
+                $message = 'Barang berhasil dipindahkan ke tempat sampah.';
+            }
+        } else {
+            // Fallback: biasa delete
+            $product->delete();
+            $message = 'Barang berhasil dihapus!';
+        }
+
+        return redirect()->route('products.index')->with('success', $message);
     }
 }

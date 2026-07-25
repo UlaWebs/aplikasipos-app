@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             @if (session('success'))
                 <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                     <strong class="font-bold">Berhasil!</strong>
@@ -17,7 +17,7 @@
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    
+
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Daftar Barang Dagangan</h3>
                         <a href="{{ route('products.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition">
@@ -58,7 +58,7 @@
                                     <div class="text-red-500 text-xs">
                                         Beli: Rp {{ number_format($product->harga_beli, 0, ',', '.') }}
                                     </div>
-                                    
+
                                     <div class="text-green-600 font-bold">
                                         Jual: Rp {{ number_format($product->harga, 0, ',', '.') }}
                                     </div>
@@ -78,8 +78,8 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="#" class="text-yellow-500 hover:text-yellow-700 mr-3">Edit</a>
-                                        <form action="#" method="POST" class="inline-block" onsubmit="return confirm('Yakin hapus barang ini?')">
+                                        <a href="{{ route('products.edit', $product->id) }}" class="text-yellow-500 hover:text-yellow-700 mr-3">Edit</a>
+                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin hapus barang ini?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>

@@ -51,14 +51,14 @@ class RestockController extends Controller
             $product->stok += $request->jumlah;
 
             // 3. Update Harga Beli di Master Data (DIGANTI dengan harga baru)
-            $product->harga_beli = $hargaBeliBaru; 
-            
+            $product->harga_beli = $hargaBeliBaru;
+
             // 4. Simpan perubahan ke Master Data
             $product->save();
             // --------------------------
 
             // Jurnal Otomatis (Sama kayak kodinganmu sebelumnya)
-            $akunPersediaan = Coa::where('kode_akun', '112')->first(); 
+            $akunPersediaan = Coa::where('kode_akun', '112')->first();
             $akunKas = Coa::where('kode_akun', '111')->first();
 
             if ($akunPersediaan && $akunKas) {

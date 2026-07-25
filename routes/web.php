@@ -16,14 +16,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // ====================================================
 // GROUP 1: ZONA UMUM (ADMIN & KASIR BOLEH MASUK) ✅
 // ====================================================
-Route::middleware(['auth', 'verified', 'prevent-back-history'])->group(function () {
-    
+Route::middleware(['auth'])->group(function () {
+
     // 1. DASHBOARD (Isinya Dinamis: Admin liat Omzet, Kasir liat Log Pribadi)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified', 'prevent-back-history'])->group(function 
 // GROUP 2: ZONA KHUSUS ADMIN (KASIR DILARANG MASUK) ⛔
 // ====================================================
 Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->group(function () {
-    
+
     // 1. MASTER DATA (Dapur Toko)
     Route::resource('products', ProductController::class);
     Route::resource('restocks', RestockController::class);
@@ -55,6 +55,8 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->group(functio
     Route::get('/laporan/buku-besar', [LaporanController::class, 'bukuBesar'])->name('laporan.buku_besar');
     Route::get('/laporan/laba-rugi', [LaporanController::class, 'labaRugi'])->name('laporan.laba_rugi');
     Route::get('/laporan/neraca', [LaporanController::class, 'neraca'])->name('laporan.neraca');
+    Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
+    Route::get('/laporan/pembelian', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
 
 });
 

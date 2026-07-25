@@ -12,12 +12,11 @@
 
                     <form action="{{ route('coas.store') }}" method="POST">
                         @csrf
-
                         <div class="mb-4">
                             <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
                                 Kode Akun (No. Perkiraan)
                             </label>
-                            <input type="text" name="kode_akun" 
+                            <input type="text" name="kode_akun"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-white dark:border-gray-600"
                                 placeholder="Contoh: 111, 501, 602" value="{{ old('kode_akun') }}">
                             @error('kode_akun')
@@ -30,16 +29,18 @@
                             <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
                                 Nama Akun
                             </label>
-                            <input type="text" name="nama_akun" 
+                            <input type="text" name="nama_akun"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                                placeholder="Contoh: Kas Kecil, Utang Bank, Biaya Listrik" value="{{ old('nama_akun') }}">
+                                placeholder="Contoh: Kas Kecil, Utang Bank, Biaya Listrik"
+                                value="{{ old('nama_akun') }}">
                         </div>
 
                         <div class="mb-6">
                             <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
                                 Header / Kategori Akun
                             </label>
-                            <select name="header_akun" class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                            <select name="header_akun"
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600">
                                 <option value="" disabled selected>-- Pilih Kategori --</option>
                                 <option value="Aset">1 - Aset (Harta)</option>
                                 <option value="Kewajiban">2 - Kewajiban (Utang)</option>
@@ -50,14 +51,15 @@
                         </div>
 
                         <div class="flex items-center justify-end gap-2">
-                            <a href="{{ route('coas.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            <a href="{{ route('coas.index') }}"
+                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Batal
                             </a>
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Simpan Akun
                             </button>
                         </div>
-
                     </form>
 
                 </div>
