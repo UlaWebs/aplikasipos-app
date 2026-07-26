@@ -135,13 +135,37 @@ class RestockController extends Controller
         $detailRestock = RestockDetail::findOrFail($id);
         $restockId = $detailRestock->restock_id;
         $product = Product::findOrFail($detailRestock->product_id);
+        $restock = Restock::findOrFail($restockId);
 
         $product->stok -= $detailRestock->jumlah;
         $product->save();
+
+        $restock->total_pengeluaran -= $detailRestock->subtotal;
+        $restock->save();
 
         $detailRestock->delete();
 
         return redirect()->route('restocks.detail', ['id' => $restockId])
             ->with('success', 'Data detail restock berhasil dihapus');
+    }
+
+    public function destroy($id)
+    {
+        // Cari data restock berdasarkan id_restock
+        $restock = Restock::findOrFail($id);
+
+        // Cek apakah restock memiliki detail restock
+        $detailRestock = RestockDetail::where('id', $id)->count();
+
+        if ($detailRestock > 0) {
+            // Jika ada detail restock, kembalikan pesan error
+            return redirect()->route('restocks.index')->with('error', 'Tidak bisa menghapus restock yang memiliki detail
+            restock.');
+        }
+
+        // Jika tidak ada detail restock, lanjutkan penghapusan
+        $restock->delete();
+
+        return redirect()->route('restocks.index')->with('success', 'Data Berhasil di Hapus');
     }
 }

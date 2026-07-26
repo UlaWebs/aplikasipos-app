@@ -14,6 +14,12 @@
                 </div>
             @endif
 
+             @if (session('error'))
+                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
@@ -48,7 +54,7 @@
                                         <a href="{{ route('restocks.detail', $item->id) }}"
                                             class="text-yellow-500 hover:text-yellow-700 mr-3">Edit</a>
                                         <form action="{{ route('restocks.destroy', $item->id) }}" method="POST"
-                                            class="inline-block" onsubmit="return confirm('Yakin hapus barang ini?')">
+                                            class="inline-block" onsubmit="return confirm('Yakin hapus data restock ini?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

@@ -144,13 +144,8 @@ class LaporanController extends Controller
 
     public function pembelian()
     {
-        // Ambil semua data jurnal, urutkan dari yang terbaru
-        // Kita load 'coa' biar gak berat (Eager Loading)
-        $jurnals = Jurnal::with(['coa', 'transaction'])
-            ->orderBy('tanggal', 'desc')
-            ->orderBy('id', 'desc')
-            ->get();
 
-        return view('laporan.pembelian', compact('jurnals'));
+
+        return view('laporan.pembelian', compact('pembelian'));
     }
 }

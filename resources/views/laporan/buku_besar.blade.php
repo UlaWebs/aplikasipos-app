@@ -44,8 +44,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php 
-                                        $saldo = 0; 
+                                    @php
+                                        $saldo = 0;
                                         // Tentukan saldo normal (Aset/Beban bertambah di Debit, sisanya di Kredit)
                                         // Header Akun: 1=Aset, 5=Beban, 6=Beban
                                         $isDebitNormal = in_array(substr($selectedCoa->kode_akun, 0, 1), ['1', '5', '6']);

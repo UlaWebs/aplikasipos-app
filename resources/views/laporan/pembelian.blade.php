@@ -10,6 +10,27 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
+                    <form action="{{ route('laporan.buku_besar') }}" method="GET"
+                        class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg flex gap-4 items-end">
+                        <div class="w-full md:w-1/3">
+                            <label class="block text-sm font-bold mb-2">Pilih Akun (COA):</label>
+                            <select name="akun_id"
+                                class="w-full rounded border-gray-300 dark:bg-gray-900 dark:border-gray-600">
+                                <option value="">-- Pilih Akun --</option>
+                                @foreach ($coas as $coa)
+                                    <option value="{{ $coa->id }}"
+                                        {{ request('akun_id') == $coa->id ? 'selected' : '' }}>
+                                        {{ $coa->kode_akun }} - {{ $coa->nama_akun }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded shadow">
+                            Tampilkan Data
+                        </button>
+                    </form>
+
                     <div class="text-center mb-8">
                         <h3 class="text-2xl font-bold uppercase tracking-widest">Toko Grosir Sukses</h3>
                         <p class="text-gray-500 text-sm">Laporan Pembelian</p>
@@ -18,7 +39,8 @@
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border border-gray-200">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <thead
+                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th class="px-6 py-3 border">Produk</th>
                                     <th class="px-6 py-3 border">Kategori</th>
