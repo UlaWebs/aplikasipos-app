@@ -65,6 +65,9 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->group(functio
     Route::get('/laporan/neraca', [LaporanController::class, 'neraca'])->name('laporan.neraca');
     Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
     Route::get('/laporan/pembelian', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
+
+    Route::get('/laporan/penjualan/data/{periode?}', [LaporanController::class, 'viewdatalaporan_penjualan'])->name('laporan.penjualan.data');
+    Route::get('/laporan/pembelian/data/{periode?}', [LaporanController::class, 'viewdatalaporan_pembelian'])->name('laporan.pembelian.data');
 });
 
 require __DIR__ . '/auth.php';

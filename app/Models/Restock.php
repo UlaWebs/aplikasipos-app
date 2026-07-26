@@ -16,9 +16,8 @@ class Restock extends Model
         'nama_supplier',
     ];
 
-    // Relasi: Satu struk Restock punya banyak detail barang
     public function details()
     {
-        return $this->hasMany(RestockDetail::class);
+        return $this->hasMany(RestockDetail::class, 'restock_id');
     }
 }
