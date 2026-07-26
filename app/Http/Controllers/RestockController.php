@@ -3,90 +3,145 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Jurnal;
-use App\Models\Coa;
+use App\Models\Restock;
+use App\Models\RestockDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RestockController extends Controller
 {
-    // Halaman Riwayat Restock (Nanti kita bikin view-nya sederhana aja)
     public function index()
     {
-        // Kita ambil data jurnal yang terkait restock aja (keterangannya mengandung kata 'Restock')
-        $riwayat = Jurnal::where('keterangan', 'like', '%Restock%')
-                        ->where('debit', '>', 0) // Ambil sisi debitnya aja biar gak dobel
-                        ->latest()
-                        ->get();
+        $riwayat = Restock::latest()->get();
 
         return view('restocks.index', compact('riwayat'));
     }
 
-    // Form Belanja Stok
     public function create()
     {
         $products = Product::orderBy('nama_produk')->get();
+
         return view('restocks.create', compact('products'));
     }
 
-    // Proses Simpan
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required',
-            'jumlah' => 'required|numeric|min:1',
-            'total_bayar' => 'required|numeric|min:0', // Total Modal
+            'tanggal' => 'required|date',
+            'nama_supplier' => 'required',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $product = Product::findOrFail($request->product_id);
+            $nomorRestock = $this->generateNomorRestock();
+            $tglFormat = date('Y-m-d', strtotime($request->tanggal));
 
-            // --- INI BAGIAN BARUNYA ---
-            // 1. Hitung harga satuan terbaru (Total Modal / Jumlah Barang)
-            $hargaBeliBaru = $request->total_bayar / $request->jumlah;
-
-            // 2. Update Stok (DITAMBAH)
-            $product->stok += $request->jumlah;
-
-            // 3. Update Harga Beli di Master Data (DIGANTI dengan harga baru)
-            $product->harga_beli = $hargaBeliBaru;
-
-            // 4. Simpan perubahan ke Master Data
-            $product->save();
-            // --------------------------
-
-            // Jurnal Otomatis (Sama kayak kodinganmu sebelumnya)
-            $akunPersediaan = Coa::where('kode_akun', '112')->first();
-            $akunKas = Coa::where('kode_akun', '111')->first();
-
-            if ($akunPersediaan && $akunKas) {
-                // Debit: Persediaan (Bertambah senilai total belanja)
-                Jurnal::create([
-                    'coa_id' => $akunPersediaan->id,
-                    'tanggal' => now(),
-                    'keterangan' => 'Restock: ' . $product->nama_produk,
-                    'debit' => $request->total_bayar,
-                    'kredit' => 0,
-                ]);
-
-                // Kredit: Kas (Berkurang senilai total belanja)
-                Jurnal::create([
-                    'coa_id' => $akunKas->id,
-                    'tanggal' => now(),
-                    'keterangan' => 'Restock: ' . $product->nama_produk,
-                    'debit' => 0,
-                    'kredit' => $request->total_bayar,
-                ]);
-            }
+            $restock = Restock::create([
+                'nomor_restock' => $nomorRestock,
+                'tanggal' => $tglFormat,
+                'total_pengeluaran' => 0,
+                'nama_supplier' => $request->nama_supplier,
+            ]);
 
             DB::commit();
-            return redirect()->route('restocks.index')->with('success', 'Stok nambah & Harga Beli di Master Data sudah diupdate!');
 
+            return redirect()->route('restocks.detail', ['id' => $restock->id])
+                ->with('success', 'Data restock berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->with('error', 'Gagal restock: ' . $e->getMessage());
+
+            return back()->withInput()->with('error', 'Gagal restock: ' . $e->getMessage());
         }
+    }
+
+    public function generateNomorRestock()
+    {
+        $date = date('dmy');
+        $latestRestock = Restock::latest('tanggal')->latest('id')->first();
+
+        if ($latestRestock) {
+            $lastNo = (int) substr($latestRestock->nomor_restock, -3);
+            $newNo = 'PM-' . $date . sprintf('%03d', $lastNo + 1);
+        } else {
+            $newNo = 'PM-' . $date . '001';
+        }
+
+        return $newNo;
+    }
+
+    public function detail($id)
+    {
+        $restock = Restock::findOrFail($id);
+        $details = RestockDetail::where('restock_id', $id)
+            ->with('product')
+            ->get();
+        $products = Product::orderBy('nama_produk')->get();
+
+        return view('restocks.detail', compact('restock', 'details', 'products'));
+    }
+
+    public function create_detail($id)
+    {
+        return $this->detail($id);
+    }
+
+    public function storedetail(Request $request)
+    {
+        $validated = $request->validate([
+            'restock_id' => 'required|exists:restocks,id',
+            'product_id' => 'required|exists:products,id',
+            'jumlah' => 'required|numeric|min:1',
+            'harga_beli_satuan' => 'required|numeric|min:0',
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
+        $product->harga_beli = $request->harga_beli_satuan;
+        $product->stok += $request->jumlah;
+        $product->save();
+
+        $subtotal = $request->jumlah * $request->harga_beli_satuan;
+
+        $restock = Restock::findOrFail($request->restock_id);
+        $restock->total_pengeluaran += $subtotal;
+        $restock->save();
+
+        RestockDetail::create([
+            'restock_id' => $request->restock_id,
+            'product_id' => $request->product_id,
+            'jumlah' => $request->jumlah,
+            'harga_beli_satuan' => $request->harga_beli_satuan,
+            'subtotal' => $subtotal,
+        ]);
+
+        return redirect()->route('restocks.detail', ['id' => $request->restock_id])
+            ->with('success', 'Data barang restock berhasil ditambahkan');
+    }
+
+    public function edit_detail($id)
+    {
+        return $this->detail($id);
+    }
+
+    public function update_detail(Request $request, $id)
+    {
+        $request->merge(['restock_id' => $id]);
+
+        return $this->storedetail($request);
+    }
+
+    public function destroydetail($id)
+    {
+        $detailRestock = RestockDetail::findOrFail($id);
+        $restockId = $detailRestock->restock_id;
+        $product = Product::findOrFail($detailRestock->product_id);
+
+        $product->stok -= $detailRestock->jumlah;
+        $product->save();
+
+        $detailRestock->delete();
+
+        return redirect()->route('restocks.detail', ['id' => $restockId])
+            ->with('success', 'Data detail restock berhasil dihapus');
     }
 }

@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('kode_produk')->unique();
             $table->string('nama_produk');
             $table->string('kategori'); // Makanan/Minuman
+            $table->bigInteger('harga_beli')->default(0);
             $table->bigInteger('harga'); // Pakai BigInt biar aman digitnya banyak
             $table->integer('stok')->default(0); // Tambahan penting buat POS
+            $table->string('satuan')->default('pcs');
             $table->string('gambar')->nullable(); // Simpan nama filenya aja
             $table->timestamps();
             $table->softDeletes();

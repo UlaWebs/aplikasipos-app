@@ -45,7 +45,15 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->group(functio
 
     // 1. MASTER DATA (Dapur Toko)
     Route::resource('products', ProductController::class);
+
     Route::resource('restocks', RestockController::class);
+    Route::get('/restocks/detail/{id}', [RestockController::class, 'detail'])->name('restocks.detail');
+    Route::get('/restocks/detail/{id}/create', [RestockController::class, 'create_detail']);
+    Route::post('/restocks/storedetail', [RestockController::class, 'storedetail'])->name('restocks.storedetail');
+    Route::get('/restocks/detail/{id}/edit', [RestockController::class, 'edit_detail']);
+    Route::patch('/restocks/detail/{id}', [RestockController::class, 'update_detail']);
+    Route::get('/restocks/destroydetail/{id}', [RestockController::class, 'destroydetail'])->name('restocks.destroydetail');
+
     Route::resource('coas', CoaController::class);
     Route::get('/coa/{id}/edit', [CoaController::class, 'edit'])->name('coa.edit');
     Route::put('/coa/{id}', [CoaController::class, 'update'])->name('coa.update');
@@ -57,7 +65,6 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->group(functio
     Route::get('/laporan/neraca', [LaporanController::class, 'neraca'])->name('laporan.neraca');
     Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
     Route::get('/laporan/pembelian', [LaporanController::class, 'pembelian'])->name('laporan.pembelian');
-
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

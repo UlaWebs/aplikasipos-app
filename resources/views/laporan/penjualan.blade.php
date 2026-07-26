@@ -28,31 +28,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($jurnals as $jurnal)
-                                    <tr
-                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50">
-                                        <td class="px-6 py-4">
-                                            Produk 1
-                                        </td>
-                                        <td class="px-6 py-4 font-mono text-xs">
-                                            Kategori 1
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="font-bold text-indigo-600">
-                                                12
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-right font-mono">
-                                            10000
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        Produk 1
+                                    </td>
+                                    <td class="px-6 py-4 font-mono text-xs">
+                                        Kategori 1
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="font-bold text-indigo-600">
+                                            12
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right font-mono">
+                                        10000
+                                    </td>
+                                </tr>
                             </tbody>
                             <tfoot class="font-bold bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
                                 <tr>
                                     <td colspan="3" class="px-6 py-3 text-center">TOTAL BALANCE</td>
                                     <td class="px-6 py-3 text-right text-green-600">
-                                        Rp {{ number_format($jurnals->sum('debit'), 0, ',', '.') }}
+                                        {{-- Rp {{ number_format($jurnals->sum('debit'), 0, ',', '.') }} --}}
                                     </td>
                                 </tr>
                             </tfoot>

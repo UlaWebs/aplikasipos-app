@@ -27,7 +27,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($jurnals as $jurnal)
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50">
                                     <td class="px-6 py-4">
                                         Produk 1
@@ -44,7 +43,6 @@
                                         10000
                                     </td>
                                 </tr>
-                                @endforeach
                             </tbody>
                             <tfoot class="font-bold bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
                                 <tr>
