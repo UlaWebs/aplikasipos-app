@@ -114,6 +114,37 @@ class RestockController extends Controller
             'subtotal' => $subtotal,
         ]);
 
+        $akunKas = \App\Models\Coa::where('kode_akun', '111')->first();
+        $akunPersediaan = \App\Models\Coa::where('kode_akun', '112')->first();
+
+        if ($akunKas && $akunPersediaan) {
+            // Ambil data restock untuk mengambil nomor restocknya
+            $dataRestock = \App\Models\Restock::find($request->restock_id);
+            $nomorRestock = $dataRestock ? $dataRestock->nomor_restock : 'Baru';
+
+            // 1. Persediaan Bertambah (Debit)
+            \App\Models\Jurnal::create([
+                'restock_id' => $request->restock_id,
+                'transaction_id' => null, // Biarkan kosong karena ini bukan penjualan
+                'coa_id' => $akunPersediaan->id,
+                'tanggal' => now(),
+                'keterangan' => 'Restock Masuk: ' . $nomorRestock,
+                'debit' => $subtotal,
+                'kredit' => 0,
+            ]);
+
+            // 2. Kas Berkurang (Kredit)
+            \App\Models\Jurnal::create([
+                'restock_id' => $request->restock_id,
+                'transaction_id' => null, // Biarkan kosong
+                'coa_id' => $akunKas->id,
+                'tanggal' => now(),
+                'keterangan' => 'Pengeluaran Restock: ' . $nomorRestock,
+                'debit' => 0,
+                'kredit' => $subtotal,
+            ]);
+        }
+
         return redirect()->route('restocks.detail', ['id' => $request->restock_id])
             ->with('success', 'Data barang restock berhasil ditambahkan');
     }

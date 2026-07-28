@@ -36,7 +36,7 @@
                                             {{ \Carbon\Carbon::parse($jurnal->tanggal)->format('d/m/Y H:i') }}
                                         </td>
                                         <td class="px-6 py-4 font-mono text-xs">
-                                            {{ $jurnal->transaction->no_transaksi ?? '-' }}
+                                            {{ $jurnal->nomor_referensi }}
                                         </td>
                                         <td class="px-6 py-4">
                                             <span class="font-bold text-indigo-600">

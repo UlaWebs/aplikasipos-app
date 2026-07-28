@@ -21,7 +21,7 @@ class Laporan extends Model
      */
     public static function getJurnalUmum()
     {
-        return Jurnal::with(['coa', 'transaction'])
+        return Jurnal::with(['coa', 'transaction', 'restock'])
             ->orderBy('tanggal', 'desc')
             ->orderBy('id', 'desc')
             ->get();

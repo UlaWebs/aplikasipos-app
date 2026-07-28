@@ -23,7 +23,7 @@
                             <label for="nama_supplier">Nama Supplier</label>
                             <input type="text" name="nama_supplier" id="nama_supplier"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-700 dark:text-white"
-                                placeholder="Contoh: 100" value="{{ old('nama_supplier') }}">
+                                placeholder="Contoh: PT Jaya Abadi" value="{{ old('nama_supplier') }}">
                         </div>
 
                         <div class="flex items-center justify-end gap-2">
